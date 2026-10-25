@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bank_statement_line_list_smart" model="ir.ui.view">
+        <field name="name">account.bank.statement.line.list.smart_reconcile</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="is_reconciled">
+                <field name="date"/>
+                <field name="journal_id"/>
+                <field name="payment_ref"/>
+                <field name="partner_name" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount" sum="Total"/>
+                <field name="is_reconciled" widget="boolean"/>
+                <button name="action_smart_suggest" type="object" string="Suggest Matches" icon="lightbulb"
+                        class="btn-link" invisible="is_reconciled or amount &lt;= 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bank_statement_line_search_smart" model="ir.ui.view">
+        <field name="name">account.bank.statement.line.search.smart_reconcile</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="payment_ref"/>
+                <field name="partner_name"/>
+                <field name="journal_id"/>
+                <filter name="not_reconciled" string="Not Reconciled" domain="[('is_reconciled', '=', False)]"/>
+                <filter name="incoming" string="Incoming" domain="[('amount', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="date" string="Date" date="date"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bank_statement_line_smart" model="ir.actions.act_window">
+        <field name="name">Bank Lines to Match</field>
+        <field name="res_model">account.bank.statement.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_bank_statement_line_list_smart"/>
+        <field name="search_view_id" ref="view_bank_statement_line_search_smart"/>
+        <field name="context">{'search_default_not_reconciled': 1, 'search_default_incoming': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No bank lines to match</p>
+            <p>Import a bank statement, then use "Suggest Matches" on a line.</p>
+        </field>
+    </record>
+
+    <record id="view_smart_reconcile_feedback_list" model="ir.ui.view">
+        <field name="name">smart.reconcile.feedback.list</field>
+        <field name="model">smart.reconcile.feedback</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="create_date" string="Date"/>
+                <field name="create_uid" string="User"/>
+                <field name="statement_line_id"/>
+                <field name="invoice_ids" widget="many2many_tags"/>
+                <field name="rank"/>
+                <field name="confidence" widget="percentage"/>
+                <field name="accepted"/>
+                <field name="model_version" optional="hide"/>
+                <field name="sent" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_smart_reconcile_feedback" model="ir.actions.act_window">
+        <field name="name">Match Feedback</field>
+        <field name="res_model">smart.reconcile.feedback</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_smart_reconcile" name="Smart Reconciliation" parent="account.menu_finance_receivables"
+              sequence="90" groups="account.group_account_invoice"/>
+    <menuitem id="menu_smart_reconcile_lines" action="action_bank_statement_line_smart"
+              parent="menu_smart_reconcile" sequence="1"/>
+    <menuitem id="menu_smart_reconcile_feedback" action="action_smart_reconcile_feedback"
+              parent="menu_smart_reconcile" sequence="2"/>
+</odoo>

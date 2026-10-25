@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.smart_reconcile</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Smart Bank Reconciliation" name="smart_reconcile_setting_container">
+                    <setting id="smart_reconcile_service" string="Matching Service"
+                             help="Address of the ML service that ranks invoice matches">
+                        <field name="smart_reconcile_service_url"/>
+                    </setting>
+                    <setting id="smart_reconcile_threshold" string="Confidence Threshold"
+                             help="Suggestions below this score are marked as low confidence">
+                        <field name="smart_reconcile_threshold"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
