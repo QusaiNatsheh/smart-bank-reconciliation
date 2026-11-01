@@ -12,5 +12,5 @@ class TestSettings(TransactionCase):
         )
         settings.execute()
         params = self.env["ir.config_parameter"].sudo()
-        self.assertEqual(params.get_str("smart_reconcile.service_url"), "http://localhost:9999")
-        self.assertEqual(params.get_float("smart_reconcile.threshold"), 0.65)
+        self.assertEqual(params.get_param("smart_reconcile.service_url"), "http://localhost:9999")
+        self.assertEqual(float(params.get_param("smart_reconcile.threshold")), 0.65)

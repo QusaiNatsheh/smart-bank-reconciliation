@@ -14,7 +14,7 @@
                 <field name="currency_id" column_invisible="1"/>
                 <field name="amount" sum="Total"/>
                 <field name="is_reconciled" widget="boolean"/>
-                <button name="action_smart_suggest" type="object" string="Suggest Matches" icon="lightbulb"
+                <button name="action_smart_suggest" type="object" string="Suggest Matches" icon="fa-lightbulb-o"
                         class="btn-link" invisible="is_reconciled or amount &lt;= 0"/>
             </list>
         </field>

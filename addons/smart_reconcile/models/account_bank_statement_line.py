@@ -18,7 +18,7 @@ class AccountBankStatementLine(models.Model):
     smart_reconcile_feedback_ids = fields.One2many("smart.reconcile.feedback", "statement_line_id")
 
     def _smart_reconcile_service_url(self):
-        url = self.env["ir.config_parameter"].sudo().get_str("smart_reconcile.service_url")
+        url = self.env["ir.config_parameter"].sudo().get_param("smart_reconcile.service_url")
         return (url or "http://ml:8000").rstrip("/")
 
     # ------------------------------------------------------------------ payload
@@ -115,7 +115,7 @@ class AccountBankStatementLine(models.Model):
             raise UserError(self.env._("Suggestions are only available for lines in the company currency."))
         invoices = self._smart_reconcile_open_invoices()
         result = self._smart_reconcile_call_service(self._smart_reconcile_payload(invoices))
-        threshold = self.env["ir.config_parameter"].sudo().get_float("smart_reconcile.threshold") or 0.8
+        threshold = float(self.env["ir.config_parameter"].sudo().get_param("smart_reconcile.threshold") or 0.8)
         valid_ids = set(invoices.ids)
         wizard = self.env["smart.reconcile.wizard"].create(
             {

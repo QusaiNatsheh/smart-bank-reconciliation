@@ -1,7 +1,7 @@
 {
     "name": "Smart Bank Reconciliation",
     "summary": "Ranks likely invoice matches for bank statement lines using a trained model",
-    "version": "20.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Accounting/Accounting",
     "author": "Qusai Natsheh",
     "website": "https://github.com/QusaiNatsheh/smart-bank-reconciliation",
@@ -9,7 +9,8 @@
     "depends": ["account"],
     "external_dependencies": {"python": ["requests"]},
     "data": [
-        "security/ir.access.csv",
+        "security/ir.model.access.csv",
+        "security/smart_reconcile_security.xml",
         "data/ir_cron.xml",
         "views/res_config_settings_views.xml",
         "views/res_partner_views.xml",

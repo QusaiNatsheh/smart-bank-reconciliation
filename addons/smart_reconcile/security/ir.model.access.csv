@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_smart_reconcile_feedback_user,smart.reconcile.feedback user,model_smart_reconcile_feedback,account.group_account_invoice,1,0,1,0
+access_smart_reconcile_feedback_manager,smart.reconcile.feedback manager,model_smart_reconcile_feedback,account.group_account_manager,1,1,1,1
+access_smart_reconcile_wizard_user,smart.reconcile.wizard user,model_smart_reconcile_wizard,account.group_account_invoice,1,1,1,1
+access_smart_reconcile_suggestion_user,smart.reconcile.suggestion user,model_smart_reconcile_suggestion,account.group_account_invoice,1,1,1,1

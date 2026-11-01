@@ -11,7 +11,7 @@ from odoo.exceptions import UserError
 
 data = json.load(open(os.environ.get("DEMO_JSON", "/mnt/data/demo.json"), encoding="utf-8"))
 truth = {line["ref"]: line["true_invoices"] for line in data["bank_lines"]}
-threshold = env["ir.config_parameter"].sudo().get_float("smart_reconcile.threshold") or 0.8
+threshold = float(env["ir.config_parameter"].sudo().get_param("smart_reconcile.threshold") or 0.8)
 Move = env["account.move"]
 lines = env["account.bank.statement.line"].search([("is_reconciled", "=", False)], order="date, id")
 stats = {"matched": 0, "top1": 0, "top3": 0, "unmatched": 0, "confident": 0, "confident_right": 0, "errors": 0}

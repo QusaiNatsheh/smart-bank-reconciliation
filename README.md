@@ -1,9 +1,15 @@
 # Smart Bank Reconciliation
 
-A learned ranking model for **Odoo 20** that suggests which customer invoice(s) an incoming bank statement line
+A learned ranking model for **Odoo 19** that suggests which customer invoice(s) an incoming bank statement line
 pays. Each suggestion shows a confidence score and plain-language reasons. The model handles missing or messy
 references, partial payments, grouped payments (one transfer for several invoices), and partner names written
 in Arabic, English, or a varied Latin spelling of an Arabic name.
+
+> **Branch `19.0`: Odoo 19 version.** The Odoo 20 version is on `main`. The ML service, data and model are the
+> same; only the Odoo module differs. Changes from 20 to 19: access rights back to `ir.model.access.csv` plus an
+> `ir.rule`, `get_param` instead of `get_str` / `get_float`, Font Awesome button icons, and the `odoo:19.0` image.
+> Verified on Odoo 19.0 Community: all 11 module tests pass, and the end-to-end check gives the same result as on
+> Odoo 20 (Top-1 95.0%, Top-3 98.7%, 99.3% precision above the threshold).
 
 ![Suggest Matches → review → Accept](docs/screenshots/demo.gif)
 
@@ -39,7 +45,7 @@ model never sees later data during training.
   suggestion, and 98.9% of those are correct.
 - **Candidate recall:** the correct invoice set is among the generated candidates for 99.5% of matched lines.
   The remaining 0.5% cannot be found by any ranking.
-- **End to end through Odoo:** 320 bank lines were loaded into an Odoo 20 database and sent through the
+- **End to end through Odoo:** 320 bank lines were loaded into an Odoo 19 database and sent through the
   module and the live service, one by one, as a user would. Result: Top-1 95.0%, Top-3 98.7%. 281 of 320 lines
   were above the threshold, with 99.3% precision. The small drop from the offline result is expected: the demo
   database has no payment history, so the partner-timing feature is missing.
@@ -53,7 +59,7 @@ whether the reference mentions invoices that the candidate does not include.
 
 ## How it compares with native Odoo
 
-- **Odoo 20 Community** has no bank reconciliation screen and no matching suggestions. This module adds both.
+- **Odoo 19 Community** has no bank reconciliation screen and no matching suggestions. This module adds both.
 - **Odoo Enterprise** has reconciliation models: rules that you configure, which match on amount, partner and
   label. The baseline in this project is a rule set in that spirit (reference, amount, name), written for this
   project. It is **not** Odoo's own engine, and the comparison above is not a measurement of Odoo Enterprise.
@@ -65,7 +71,7 @@ whether the reference mentions invoices that the candidate does not include.
 
 ```mermaid
 flowchart LR
-    subgraph Odoo 20
+    subgraph Odoo 19
         U[Accountant] -->|Suggest Matches| SL[Bank statement line]
         SL -->|open invoices,<br/>partner history| REQ[POST /suggest]
         W[Suggestions wizard] -->|Accept| REC[Reconcile line<br/>with invoices]
@@ -154,7 +160,7 @@ python -m smart_reconcile_ml.generator --out data/generated/v1
 python -m smart_reconcile_ml.train --data data/generated/v1 --out models/latest
 uvicorn smart_reconcile_ml.service:app --port 8000
 ```
-Then add `addons/` to an Odoo 20 addons path, install *Smart Bank Reconciliation*, and set the service URL to
+Then add `addons/` to an Odoo 19 addons path, install *Smart Bank Reconciliation*, and set the service URL to
 `http://localhost:8000` in settings. To load demo data: `python -m smart_reconcile_ml.export_demo`, then
 `DEMO_JSON=<path> odoo-bin shell -d <db> < scripts/load_demo_data.py`.
 
@@ -182,7 +188,7 @@ odoo-bin -d test -i smart_reconcile --test-tags /smart_reconcile --stop-after-in
 
 | Path | Contents |
 |---|---|
-| `addons/smart_reconcile/` | Odoo 20 module (LGPL-3) |
+| `addons/smart_reconcile/` | Odoo 19 module (LGPL-3) |
 | `ml/src/smart_reconcile_ml/` | Generator, features, training, model, FastAPI service |
 | `ml/tests/` | pytest suite |
 | `scripts/` | Odoo shell scripts: load demo data, end-to-end check |
